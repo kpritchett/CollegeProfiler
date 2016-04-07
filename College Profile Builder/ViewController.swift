@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import SafariServices
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate
     
 {
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -18,11 +19,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     {
         super.viewDidLoad()
         
-        college.append(collegeClass(Name: "University of Illinois", Location: "Illinois", NumberOfStudents: 30682, Image: UIImage(named: "UOFI")!))
+        college.append(collegeClass(Name: "University of Illinois", Location: "Champaign, Illinois", NumberOfStudents: 30682, Image: UIImage(named: "UOFI")!, WebPage: "https://illinois.edu/"))
         
-        college.append(collegeClass(Name: "University of Iowa", Location: "Iowa", NumberOfStudents: 24423, Image: UIImage(named: "UOIOWA")!))
+        college.append(collegeClass(Name: "University of Iowa", Location: "Iowa City, Iowa", NumberOfStudents: 24423, Image: UIImage(named: "UOIOWA")!, WebPage: "https://www.uiowa.edu/"))
         
-        college.append(collegeClass(Name: "University of Wisconsin", Location: "Wisconsin", NumberOfStudents: 23523, Image: UIImage(named: "UOWI")!))
+        college.append(collegeClass(Name: "University of Wisconsin", Location: "Madison, Wisconsin", NumberOfStudents: 23523, Image: UIImage(named: "UOWI")!, WebPage: "https://www.wisc.edu/"))
         
         
     }
@@ -75,13 +76,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         myAlert.addTextFieldWithConfigurationHandler{ (numberOfStudentsTextField) -> Void in
             numberOfStudentsTextField.placeholder = "Add NumberOfStudents"
         }
-        var cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        myAlert.addTextFieldWithConfigurationHandler{ (webPageTextField) -> Void in
+            webPageTextField.placeholder = "Add webPage"
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         myAlert.addAction(cancelAction)
-        var addAction = UIAlertAction(title: "Add", style: .Default) { (addAction) -> Void in
-            let nameTF = myAlert.textFields![0] as! UITextField
-            let locationTF = myAlert.textFields![1] as! UITextField
-            let numberOfStudentsTF = myAlert.textFields![2] as! UITextField
-            self.college.append(collegeClass(Name: nameTF.text, Location: locationTF.text, NumberOfStudents: numberOfStudentsTF.text.toInt()!, Image: UIImage()))
+        let addAction = UIAlertAction(title: "Add", style: .Default) { (addAction) -> Void in
+            let nameTF = myAlert.textFields![0] 
+            let locationTF = myAlert.textFields![1] 
+            let numberOfStudentsTF = myAlert.textFields![2]
+            let webPageTF = myAlert.textFields![3]
+            self.college.append(collegeClass(Name: nameTF.text!, Location: locationTF.text!, NumberOfStudents: Int(numberOfStudentsTF.text!)!, Image: UIImage(), WebPage: webPageTF.text!))
             self.myTableView.reloadData()
         }
         myAlert.addAction(addAction)
@@ -101,10 +106,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
     {
         let detailView = segue.destinationViewController as! DetailViewController
-        let selectedRow = myTableView.indexPathForSelectedRow()!.row
+        let selectedRow = myTableView.indexPathForSelectedRow!.row
         detailView.colleger = college[selectedRow]
     }
 
 
 }
+
 
